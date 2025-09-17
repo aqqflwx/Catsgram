@@ -1,5 +1,6 @@
 package ru.yandex.practicum.catsgram.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.model.User;
 import ru.yandex.practicum.catsgram.service.UserService;
@@ -7,14 +8,11 @@ import ru.yandex.practicum.catsgram.service.UserService;
 import java.util.Collection;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public Collection<User> findListUsers() {
@@ -22,8 +20,8 @@ public class UserController {
     }
 
     @PostMapping
-    public User addUser(User user) {
-        return userService.addUser(user);
+    public User create(@RequestBody User user) {
+        return userService.create(user);
     }
 
     @PutMapping

@@ -20,7 +20,7 @@ public class UserService {
         return users.values();
     }
 
-    public User addUser(User user) {
+    public User create(User user) {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new ConditionsNotMetException("Имейл должен быть указан");
         }
@@ -79,9 +79,9 @@ public class UserService {
         return ++currentMaxId;
     }
 
-    public Optional<User> findUserById(long id) {
+    public Optional<User> findUserById(Long id) {
         return users.values().stream()
-                .filter(user -> user.getId() == id)
+                .filter(user -> user.getId().equals(id))
                 .findFirst();
     }
 

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.catsgram.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
@@ -9,19 +10,23 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class PostService {
     private final Map<Long, Post> posts = new HashMap<>();
     private final UserService userService;
 
-    public PostService(UserService userService) {
-        this.userService = userService;
-    }
-
     public Collection<Post> findAll() {
         return posts.values();
+    }
+
+    public Post findById(Long id) {
+        if (posts.get(id) == null) {
+            throw new ConditionsNotMetException("Поста с id = " + id + " не найдено");
+        }
+
+        return posts.get(id);
     }
 
     public Post create(Post post) {
@@ -41,7 +46,6 @@ public class PostService {
     }
 
     public Post update(Post newPost) {
-        // проверяем необходимые условия
         if (newPost.getId() == null) {
             throw new ConditionsNotMetException("Id должен быть указан");
         }
@@ -50,7 +54,6 @@ public class PostService {
             if (newPost.getDescription() == null || newPost.getDescription().isBlank()) {
                 throw new ConditionsNotMetException("Описание не может быть пустым");
             }
-            // если публикация найдена и все условия соблюдены, обновляем её содержимое
             oldPost.setDescription(newPost.getDescription());
             return oldPost;
         }

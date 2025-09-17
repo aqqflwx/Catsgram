@@ -1,5 +1,6 @@
 package ru.yandex.practicum.catsgram.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
@@ -7,17 +8,20 @@ import ru.yandex.practicum.catsgram.service.PostService;
 import java.util.Collection;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/posts")
+
 public class PostController {
     private final PostService postService;
 
-    public PostController(PostService postService) {
-        this.postService = postService;
-    }
-
-    @GetMapping
+    @GetMapping()
     public Collection<Post> findAll() {
         return postService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Post findById(@PathVariable(required = false) Long id) {
+        return postService.findById(id);
     }
 
     @PostMapping
