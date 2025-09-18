@@ -3,6 +3,7 @@ package ru.yandex.practicum.catsgram.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.catsgram.model.Post;
+import ru.yandex.practicum.catsgram.model.TypeSort;
 import ru.yandex.practicum.catsgram.service.PostService;
 
 import java.util.Collection;
@@ -15,8 +16,10 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping()
-    public Collection<Post> findAll() {
-        return postService.findAll();
+    public Collection<Post> findAll(@RequestParam(required = false) int from,
+                                    @RequestParam(required = false) int size,
+                                    @RequestParam(required = false) TypeSort sort) {
+        return postService.findAll(from, size, sort);
     }
 
     @GetMapping("/{id}")

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
 import ru.yandex.practicum.catsgram.model.Post;
+import ru.yandex.practicum.catsgram.model.TypeSort;
 
 import java.time.Instant;
 import java.util.Collection;
@@ -17,8 +18,36 @@ public class PostService {
     private final Map<Long, Post> posts = new HashMap<>();
     private final UserService userService;
 
-    public Collection<Post> findAll() {
-        return posts.values();
+    public Collection<Post> findAll(int from, int size, TypeSort sort) {
+        if (from == 0 && size == 0) {
+            size = 10;
+        }
+
+        if (from < 0) {
+            throw new ConditionsNotMetException("Количество отбрасываемых постов должно быть положительным значением");
+        }
+
+        if (size <= 0) {
+            throw new ConditionsNotMetException("Количество отображаемых постов должно быть больше 0");
+        }
+
+        return posts.values().stream()
+                .sorted((p1, p2) -> {
+                    switch (sort) {
+                        case ASC -> {
+                            return p1.getPostDate().compareTo(p2.getPostDate());
+                        }
+                        case DESC -> {
+                            return p2.getPostDate().compareTo(p1.getPostDate());
+                        }
+                        default -> {
+                            return 0;
+                        }
+                    }
+                })
+                .skip(from)
+                .limit(size)
+                .toList();
     }
 
     public Post findById(Long id) {
