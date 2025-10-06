@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.catsgram.exception.ConditionsNotMetException;
 import ru.yandex.practicum.catsgram.exception.NotFoundException;
+import ru.yandex.practicum.catsgram.exception.ParameterNotValidException;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.model.TypeSort;
 
@@ -23,12 +24,17 @@ public class PostService {
             size = 10;
         }
 
+        if (sort == null) {
+            throw new ParameterNotValidException("sort", "Получено: " + null + " должно быть: ask или desc");
+        }
+
         if (from < 0) {
-            throw new ConditionsNotMetException("Количество отбрасываемых постов должно быть положительным значением");
+            throw new ParameterNotValidException("from", "Некорректное количество отбрасываемых постов. Кол-во"
+                    + " должно быть положительным");
         }
 
         if (size <= 0) {
-            throw new ConditionsNotMetException("Количество отображаемых постов должно быть больше 0");
+            throw new ParameterNotValidException("size", "Некорректный размер выборки. Размер должен быть больше нуля");
         }
 
         return posts.values().stream()
